@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能任务分解与分析系统</title>
+    
+    <!-- 预加载字体文件 -->
+    <link rel="preload" 
+          href="https://cdn.jsdelivr.net/npm/@mdi/font@6.5.95/fonts/materialdesignicons-webfont.woff2" 
+          as="font"
+          type="font/woff2"
+          crossorigin>
+    
+    <!-- 添加字体显示策略 -->
+    <style>
+        @font-face {
+            font-family: 'Material Design Icons';
+            font-display: swap;
+            src: url(https://cdn.jsdelivr.net/npm/@mdi/font@6.5.95/fonts/materialdesignicons-webfont.woff2) format('woff2');
+        }
+    </style>
+    
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@6.5.95/css/materialdesignicons.min.css" 
+          rel="stylesheet"
+          media="print"
+          onload="this.media='all'">
+</head>
+<body>
+    <div class="app-container">
+        <nav class="sidebar">
+            <div class="sidebar-header">
+                <i class="mdi mdi-brain"></i>
+                <h2>AI Task Master</h2>
+            </div>
+            <ul class="nav-links">
+                <li class="active"><i class="mdi mdi-home"></i>任务分析</li>
+                <li><i class="mdi mdi-history"></i>历史记录</li>
+                <li><i class="mdi mdi-cog"></i>设置</li>
+            </ul>
+        </nav>
+
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="breadcrumb">
+                    <span>主页</span>
+                    <i class="mdi mdi-chevron-right"></i>
+                    <span>任务分析</span>
+                </div>
+                <div class="user-info">
+                    <div class="action-buttons">
+                        <button class="icon-btn with-text" title="导出报告">
+                            <i class="mdi mdi-file-export"></i>
+                            <span>导出报告</span>
+                        </button>
+                        <button class="icon-btn with-text" title="保存模板">
+                            <i class="mdi mdi-content-save"></i>
+                            <span>保存模板</span>
+                        </button>
+                        <button class="icon-btn with-text" title="分享">
+                            <i class="mdi mdi-share-variant"></i>
+                            <span>分享</span>
+                        </button>
+                        <button class="icon-btn with-text" title="帮助">
+                            <i class="mdi mdi-help-circle"></i>
+                            <span>帮助</span>
+                        </button>
+                    </div>
+                    <div class="notifications">
+                        <i class="mdi mdi-bell"></i>
+                        <span class="notification-badge">2</span>
+                    </div>
+                    <div class="user-avatar">
+                        <img src="https://via.placeholder.com/32" alt="User">
+                        <span class="user-name">项目管理员</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-area">
+                <section class="task-input-section">
+                    <div class="section-header">
+                        <h2><i class="mdi mdi-pencil"></i>任务输入</h2>
+                        <div class="header-actions">
+                            <div id="status" class="status-container"></div>
+                            <button class="btn-secondary" id="resetBtn">
+                                <i class="mdi mdi-refresh"></i>重置
+                            </button>
+                            <button class="btn-primary" id="decomposeBtn">
+                                <i class="mdi mdi-play"></i>开始分析
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="input-grid">
+                        <div class="input-group">
+                            <label>任务领域</label>
+                            <select id="domainSelect" class="styled-select">
+                                <option value="general">通用领域</option>
+                                <option value="tech">技术开发</option>
+                                <option value="business">商业分析</option>
+                                <option value="research">研究项目</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>复杂度级别</label>
+                            <select id="complexityLevel" class="styled-select">
+                                <option value="simple">简单</option>
+                                <option value="medium">中等</option>
+                                <option value="complex">复杂</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>时间约束</label>
+                            <input type="text" id="timeConstraint" class="styled-input" placeholder="例如：3天、2周">
+                        </div>
+                    </div>
+
+                    <div class="task-description">
+                        <label>任务描述</label>
+                        <textarea id="mainTask" class="styled-textarea" placeholder="请详细描述您需要分解的任务..."></textarea>
+                    </div>
+
+                    <div class="task-constraints">
+                        <label>约束条件</label>
+                        <textarea id="constraints" class="styled-textarea" placeholder="请输入任何约束条件、限制因素或特殊要求..."></textarea>
+                    </div>
+
+                    <div class="template-selection">
+                        <label for="templateSelect">任务模板</label>
+                        <select id="templateSelect" class="styled-select" title="选择任务模板">
+                            <option value="">选择预设模板</option>
+                            <optgroup label="技术开发">
+                                <option value="agile">敏捷开发模板</option>
+                                <option value="waterfall">瀑布开发模板</option>
+                                <option value="microservice">微服务架构模板</option>
+                                <option value="mobile">移动应用开发模板</option>
+                            </optgroup>
+                            <optgroup label="项目管理">
+                                <option value="research">研究项目模板</option>
+                                <option value="product">产品开发模板</option>
+                                <option value="integration">系统集成模板</option>
+                                <option value="maintenance">系统维护模板</option>
+                            </optgroup>
+                            <optgroup label="业务运营">
+                                <option value="marketing">营销活动模板</option>
+                                <option value="event">活动策划模板</option>
+                                <option value="operation">运营优化模板</option>
+                                <option value="service">服务升级模板</option>
+                            </optgroup>
+                            <optgroup label="数据分析">
+                                <option value="dataAnalysis">数据分析模板</option>
+                                <option value="marketResearch">市场调研模板</option>
+                                <option value="userResearch">用户研究模板</option>
+                                <option value="businessAnalysis">商业分析模板</option>
+                            </optgroup>
+                        </select>
+                        <button class="btn-secondary">
+                            <i class="mdi mdi-plus"></i>保存为模板
+                        </button>
+                    </div>
+                </section>
+
+                <section class="analysis-results">
+                    <div class="progress-indicator" id="progressIndicator">
+                        <div class="progress-step active">
+                            <div class="step-icon">
+                                <i class="mdi mdi-file-document"></i>
+                            </div>
+                            <div class="step-content">
+                                <div class="step-label">任务分析</div>
+                                <div class="step-description">分析任务特征和要求</div>
+                            </div>
+                        </div>
+                        <div class="progress-step">
+                            <div class="step-icon">
+                                <i class="mdi mdi-sitemap"></i>
+                            </div>
+                            <div class="step-content">
+                                <div class="step-label">任务分解</div>
+                                <div class="step-description">拆分为可执行子任务</div>
+                            </div>
+                        </div>
+                        <div class="progress-step">
+                            <div class="step-icon">
+                                <i class="mdi mdi-cube"></i>
+                            </div>
+                            <div class="step-content">
+                                <div class="step-label">资源分析</div>
+                                <div class="step-description">评估所需资源配置</div>
+                            </div>
+                        </div>
+                        <div class="progress-step">
+                            <div class="step-icon">
+                                <i class="mdi mdi-alert"></i>
+                            </div>
+                            <div class="step-content">
+                                <div class="step-label">风险评估</div>
+                                <div class="step-description">识别和分析潜在风险</div>
+                            </div>
+                        </div>
+                        <div class="progress-step">
+                            <div class="step-icon">
+                                <i class="mdi mdi-calendar"></i>
+                            </div>
+                            <div class="step-content">
+                                <div class="step-label">时间规划</div>
+                                <div class="step-description">制定详细执行时间表</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="results-container">
+                        <div class="mindmap-section">
+                            <h3>
+                                <i class="mdi mdi-graph"></i>
+                                任务分解图
+                                <div class="mindmap-controls">
+                                    <button class="icon-btn" title="放大">
+                                        <i class="mdi mdi-magnify-plus"></i>
+                                    </button>
+                                    <button class="icon-btn" title="缩小">
+                                        <i class="mdi mdi-magnify-minus"></i>
+                                    </button>
+                                    <button class="icon-btn" title="适应屏幕">
+                                        <i class="mdi mdi-fit-to-screen"></i>
+                                    </button>
+                                    <button class="icon-btn" title="导出图片">
+                                        <i class="mdi mdi-export"></i>
+                                    </button>
+                                </div>
+                            </h3>
+                            <div class="mindmap-container">
+                                <div id="mindmap" class="mindmap-content"></div>
+                                <div class="mindmap-legend">
+                                    <div class="legend-item">
+                                        <span class="legend-color main-task"></span>
+                                        <span>主任务</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color subtask"></span>
+                                        <span>子任务</span>
+                                    </div>
+                                    <div class="legend-item">
+                                        <span class="legend-color critical"></span>
+                                        <span>关键路径</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="details-section">
+                            <div class="tabs-container">
+                                <div class="tabs">
+                                    <button class="tab-btn active" data-tab="task-analysis">
+                                        <i class="mdi mdi-file-document"></i>
+                                        <div class="tab-content">
+                                            <span class="tab-label">任务分析</span>
+                                            <span class="tab-description">详细的任务特征分析</span>
+                                        </div>
+                                    </button>
+                                    <button class="tab-btn" data-tab="subtasks">
+                                        <i class="mdi mdi-format-list-checks"></i>
+                                        <div class="tab-content">
+                                            <span class="tab-label">子任务</span>
+                                            <span class="tab-description">任务分解和依赖关系</span>
+                                        </div>
+                                    </button>
+                                    <button class="tab-btn" data-tab="resources">
+                                        <i class="mdi mdi-cube"></i>资源
+                                    </button>
+                                    <button class="tab-btn" data-tab="risks">
+                                        <i class="mdi mdi-alert"></i>风险
+                                    </button>
+                                    <button class="tab-btn" data-tab="timeline">
+                                        <i class="mdi mdi-calendar"></i>时间线
+                                    </button>
+                                </div>
+
+                                <div class="tab-content">
+                                    <div id="task-analysis" class="tab-pane active">
+                                        <div class="analysis-content"></div>
+                                        <div id="suggestions" class="suggestions-container"></div>
+                                    </div>
+                                    <div id="subtasks" class="tab-pane"></div>
+                                    <div id="resources" class="tab-pane"></div>
+                                    <div id="risks" class="tab-pane"></div>
+                                    <div id="timeline" class="tab-pane"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="collaboration-section">
+                        <div class="team-members">
+                            <h3><i class="mdi mdi-account-group"></i>团队成员</h3>
+                            <div class="member-list">
+                                <div class="member">
+                                    <img src="https://via.placeholder.com/32" alt="Member 1">
+                                    <span>项目负责人</span>
+                                </div>
+                                <div class="member">
+                                    <img src="https://via.placeholder.com/32" alt="Member 2">
+                                    <span>技术主管</span>
+                                </div>
+                                <button class="btn-secondary">
+                                    <i class="mdi mdi-plus"></i>添加成员
+                                </button>
+                            </div>
+                        </div>
+                        <div class="comments-section">
+                            <h3><i class="mdi mdi-comment-multiple"></i>讨论区</h3>
+                            <div class="comments-list">
+                                <div class="comment">
+                                    <div class="comment-header">
+                                        <img src="https://via.placeholder.com/24" alt="User">
+                                        <span class="comment-author">技术主管</span>
+                                        <span class="comment-time">10分钟前</span>
+                                    </div>
+                                    <div class="comment-content">
+                                        建议在资源分配时考虑团队当前的工作负载。
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="comment-input">
+                                <textarea class="styled-textarea" placeholder="添加评论..."></textarea>
+                                <button class="btn-primary">发送</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="feedback-wrapper">
+                        <div id="feedback" class="feedback-container"></div>
+                    </div>
+                </section>
+
+                <div class="analysis-section">
+                    <div class="section-header">
+                        <h3>
+                            <i class="mdi mdi-chart-box"></i>
+                            分析结果
+                        </h3>
+                        <div class="icon-description">
+                            <i class="mdi mdi-information"></i>
+                            <span>点击各项查看详细信息</span>
+                        </div>
+                    </div>
+                    <!-- ... 内容 ... -->
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/vis-network@9.1.2/dist/vis-network.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html> 
